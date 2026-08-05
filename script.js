@@ -49,6 +49,8 @@ let lastIndex = -1;
 let currentQuote = null;
 const quoteHistory = [];
 let historyPos = -1;
+let fadeTimer = null;
+let copyTimer = null;
 
 function applyMode(mode) {
   document.documentElement.setAttribute("data-theme", mode);
@@ -122,7 +124,8 @@ function displayQuote(q) {
   authorEl.classList.add("fade-out");
   tagEl.classList.add("fade-out");
 
-  setTimeout(() => {
+  clearTimeout(fadeTimer);
+  fadeTimer = setTimeout(() => {
     if (!q) {
       textEl.textContent = "No quotes in this category.";
       authorEl.textContent = "";
@@ -200,14 +203,21 @@ historyBtn.addEventListener("click", () => {
   renderHistory();
 });
 
+const COPY_LABEL = "Copy";
+
+function flashCopyLabel(label) {
+  copyBtn.textContent = label;
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(() => { copyBtn.textContent = COPY_LABEL; }, 1500);
+}
+
 function copyQuote() {
   if (!currentQuote) return;
   const copyText = `"${currentQuote.text}" \u2014 ${currentQuote.author}`;
-  navigator.clipboard.writeText(copyText).then(() => {
-    const original = copyBtn.textContent;
-    copyBtn.textContent = "Copied!";
-    setTimeout(() => { copyBtn.textContent = original; }, 1500);
-  });
+  navigator.clipboard.writeText(copyText).then(
+    () => flashCopyLabel("Copied!"),
+    () => flashCopyLabel("Copy failed")
+  );
 }
 
 newBtn.addEventListener("click", showNewQuote);
