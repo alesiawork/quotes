@@ -1,0 +1,16 @@
+{
+  "name": "Random Quote Generator",
+  "terminals": [
+    {
+      "name": "web",
+      "command": "python3 -m http.server 3000",
+      "description": "Serves the static Random Quote Generator site at http://localhost:3000"
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000
+    }
+  ]
+}
